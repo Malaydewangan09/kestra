@@ -1624,17 +1624,7 @@ public class ExecutionController {
         }
 
         Map<String, String> newLabels = labels.stream().collect(Collectors.toMap(Label::key, Label::value));
-        if (execution.getLabels() != null) {
-            execution.getLabels().forEach(
-                label -> {
-                    // only add execution label if not updated
-                    if (!newLabels.containsKey(label.key())) {
-                        newLabels.put(label.key(), label.value());
-                    }
-                }
-            );
-        }
-
+        
         Execution newExecution = execution
             .withLabels(newLabels.entrySet().stream().map(entry -> new Label(entry.getKey(), entry.getValue())).filter(label -> !label.key().isEmpty() || !label.value().isEmpty()).toList());
         eventPublisher.publishEvent(new CrudEvent<>(newExecution, execution, CrudEventType.UPDATE));
